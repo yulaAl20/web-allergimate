@@ -1,0 +1,21 @@
+Image ID,Allergy Type,Sub-Allergy Type,Allergy Item,Redness Value,Grayscale Value,Main Symptom,Sub-Symptoms,Affected Areas,Contrast Value,Symptom Severity
+img_001,Food,Nuts,Peanuts,75,120,Rash,"Swelling, Itching","Face, Arms",80,Moderate
+img_002,Tree,Pollen,Oak,50,140,Itching,"Sneezing, Red Eyes","Nose, Eyes",70,Mild
+img_004,Animal,Insect,Bee,80,110,Swelling,"Pain, Itching","Arm, Face",90,Moderate
+img_005,Food,Dairy,Milk,65,130,Nausea,"Vomiting, Dizziness","Stomach, Chest",85,Mild
+img_006,Food,Nuts,Peanuts,80,125,Rash,"Swelling, Itching","Arms, Legs",78,Severe
+img_007,Tree,Pollen,Pine,60,140,Itching,"Sneezing, Watery Eyes","Nose, Eyes",72,Mild
+img_008,Dust,Household Dust,Dust Mites,70,130,Coughing,"Wheezing, Runny Nose","Chest, Nose",77,Moderate
+img_009,Animal,Insect,Wasps,85,115,Swelling,"Pain, Redness","Hand, Foot",88,Severe
+img_010,Food,Gluten,Wheat,90,125,Stomach Ache,"Diarrhea, Fatigue","Stomach, Gut",80,Severe
+img_011,Food,Nuts,Peanuts,75,122,Rash,"Swelling, Itching","Face, Neck",81,Moderate
+img_012,Tree,Pollen,Elm,55,135,Itching,"Red Eyes, Sneezing","Eyes, Nose",69,Mild
+img_014,Animal,Insect,Bee,90,110,Swelling,"Pain, Itching, Redness","Arm, Chest",91,Severe
+img_015,Food,Dairy,Milk,60,128,Diarrhea,"Bloating, Nausea","Stomach, Gut",82,Mild
+img_017,Tree,Pollen,Birch,68,130,Itching,"Sneezing, Watery Eyes","Eyes, Nose",70,Mild
+img_019,Animal,Insect,Ants,90,112,Swelling,"Pain, Redness, Itching","Foot, Ankle",89,Severe
+img_025,Food,Dairy,Milk,65,130,Nausea,"Vomiting, Dizziness","Stomach, Chest",85,Mild
+img_030,Food,Gluten,Wheat,92,120,Stomach Ache,"Bloating, Diarrhea","Stomach, Gut",81,Severe
+img_040,Food,Dairy,Milk,65,128,Nausea,"Vomiting, Dizziness","Stomach, Chest",84,Mild
+img_035,Food,Gluten,Wheat,91,120,Stomach Pain,"Bloating, Diarrhea","Stomach, Gut",79,Severe
+img_047,Tree,Pollen,Maple,55,140,Itching,"Red Eyes, Sneezing","Eyes, Nose",69,Mild

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Allergy Management App</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/home.css') }}"
+    />
+  </head>
+  <body>
+    <!-- Header Section -->
+    <header class="header">
+      <div class="header-left">
+        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+        <h2 class="logo">AllergyCare</h2>
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Search..." />
+        <button>🔍</button>
+      </div>
+      <div class="header-icons">
+        <span>🌐</span>
+        <span>🔔</span>
+        <span class="profile">👤 Den</span>
+      </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <nav>
+        <ul>
+          <li><a href="/" id="home-tab" class="active">Home</a></li>
+          <li><a href="/scan" id="scan-tab">Scan</a></li>
+          <li><a href="#" id="history-tab">History</a></li>
+          <li><a href="#" id="profile-tab">Profile</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Home Page -->
+      <section id="home" class="tab-content active">
+        <h1>Allergy Overview</h1>
+        <div class="allergy-info">
+          <div class="allergy-text">
+            <h3>Current Allergies</h3>
+            <p>⚠️ Pollen, Dust Mites, Peanuts</p>
+          </div>
+          <div class="allergy-visual">
+            <img src="https://via.placeholder.com/150" alt="Allergy Visual" />
+          </div>
+        </div>
+        <div class="calendar-graph">
+          <div class="calendar-panel">
+            <h3>Allergy Reaction Days</h3>
+            <p>📅 Calendar View</p>
+          </div>
+          <div class="graph-panel">
+            <h3>Allergy Trends</h3>
+            <p>📊 Graph Section</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- History Page -->
+      <section id="history" class="tab-content">
+        <h1>Reaction History</h1>
+        <p>📝 View your past allergy reactions here.</p>
+      </section>
+
+      <!-- Profile Page -->
+      <section id="profile" class="tab-content">
+        <h1>Contact a Doctor</h1>
+        <p>📞 Reach out to allergy specialists for assistance.</p>
+      </section>
+    </main>
+
+    <!--chatbot-->
+    <!-- Chatbot Icon -->
+    <a href="{{ url_for('chatbot') }}" id="chatbot-icon">🤖</a>
+
+    <!-- Script for Navigation -->
+    <script>
+      const tabs = document.querySelectorAll(".sidebar a");
+      const contents = document.querySelectorAll(".tab-content");
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          tabs.forEach((item) => item.classList.remove("active"));
+          tab.classList.add("active");
+
+          contents.forEach((content) => content.classList.remove("active"));
+          document
+            .querySelector(tab.getAttribute("id").replace("-tab", ""))
+            .classList.add("active");
+        });
+      });
+      const sidebarToggle = document.getElementById("sidebar-toggle");
+      const sidebar = document.getElementById("sidebar");
+
+      // Toggle 'show-sidebar' class when the toggle button is clicked
+      sidebarToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("show-sidebar");
+      });
+    </script>
+  </body>
+</html>

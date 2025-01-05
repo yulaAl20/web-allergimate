@@ -1,0 +1,36 @@
+/* Simple styles for the reaction form */
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  header {
+    background-color: #ad4caf;
+    padding: 10px 20px;
+    color: white;
+    text-align: center;
+  }
+  
+  .main-content {
+    padding: 20px;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  

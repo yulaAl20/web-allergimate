@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css?family=Rajdhani:300,400,500,600,700');
+@import url('https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i');
+
+/*****---------------------------------------- 1) font-family: 'Rajdhani', sans-serif;
+ 2) font-family: 'Poppins', sans-serif;
+ ----------------------------------------*****/
+
+/*--------------------------------------------------------------------- import Files ---------------------------------------------------------------------*/
+
+@import url(animate.min.css);
+@import url(normalize.css);
+@import url(icomoon.css);
+@import url(css/font-awesome.min.css);
+@import url(meanmenu.css);
+@import url(owl.carousel.min.css);
+@import url(swiper.min.css);
+@import url(slick.css);
+@import url(jquery.fancybox.min.css);
+@import url(jquery-ui.css);
+@import url(nice-select.css);
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url(../images/banner-bg.png);
+    font-size: 14px;
+    font-family: Poppins;
+    line-height: 1.80857;
+    font-weight: normal;
+    overflow-x: hidden !important;
+}
+
+#specific-allergies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Add spacing between items */
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    margin-right: 15px; /* Add spacing between items */
+}
+
+.checkbox-item label {
+    font-size: 14px;
+    color: #333;
+    margin-left: 5px; /* Space between checkbox and text */
+}
+
+
+.container {
+    max-width: 1600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between; /* Aligns the containers to the left and right */
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.form-container {
+    width: 48%; /* Make it slightly smaller to create space between containers */
+}
+
+.added-allergies-panel {
+    width: 48%;
+    border: 1px solid #ccc;
+    padding: 30px;
+    border-radius: 7px;
+    background-color: #f2fbff;
+    margin-left: 2%; /* Adds space between containers */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.added-allergies-panel h2 {
+    margin-top: 0;
+}
+
+#allergies-list {
+    list-style-type: none;
+    padding: 10;
+}
+
+#allergies-list li {
+    margin: 15px 0;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 13px;
+    background-color: #fff;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+select, input, button, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #6a0dad !important;
+    color: #fff; 
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #7a0d9f !important; 
+}
+
+input[type="radio"] {
+    margin-right: 5px;
+}

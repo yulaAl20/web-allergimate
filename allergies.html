@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allergy Information</title>
+    <link rel="stylesheet" href="css/allergy.css">
+    <!-- Fontawesome CDN Link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Firebase JS SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js"></script>
+    <!-- External JavaScript -->
+    <script type="module" src="js/allergies.js"></script>
+    <script type="module" src="js/login.js"></script>
+</head>
+<body>
+    <div class="container" id="main-container">
+        <h1 id="page-title">Allergy Information</h1>
+        <div class="form-container" id="form-container">
+            <!-- Form Section -->
+            <form id="allergy-form">
+                <!-- Main Allergy Topic -->
+                <div class="input-group" id="main-allergy-group">
+                    <label for="main-allergy">Select Allergy Topic:</label>
+                    <select id="main-allergy" name="main_allergy" onchange="updateSubTopics()" required>
+                        <option value="">-- Select Allergy Topic --</option>
+                        <option value="food">Food</option>
+                        <option value="pollen">Pollen</option>
+                        <option value="animals">Animals</option>
+                        <option value="fabric">Fabric</option>
+                        <option value="cosmetic">Cosmetic</option>
+                        <option value="medication">Medication</option>
+                        <option value="insects">Insects</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <!-- Sub Topics -->
+                <div class="input-group" id="sub-topic-group" style="display: none;">
+                    <label for="sub-topic">Select Sub-Topic:</label>
+                    <select id="sub-topic" name="sub_topic" required>
+                        <option value="">-- Select Sub-Topic --</option>
+                    </select>
+                </div>
+
+                <!-- Add New Allergy Option -->
+                <div class="input-group" id="add-new-group" style="display: none;">
+                    <label for="new-allergy">Add New Allergy:</label>
+                    <input type="text" id="new-allergy" name="new_allergy" placeholder="Enter new allergy">
+                </div>
+
+                <!-- Specific Allergies -->
+                <div class="input-group" id="specific-allergy-group" style="display: none;">
+                    <label>Select Specific Allergies:</label>
+                    <div id="specific-allergies">
+                        <!-- Dynamically populated radio buttons -->
+                    </div>
+                </div>
+
+                <!-- Add Allergy Button -->
+                <div class="input-group" id="add-allergy-group">
+                    <button type="button" id="add-allergy-button" onclick="addAllergy()">Add Allergy</button>
+                </div>
+
+                <!-- Hidden Input for Data Submission -->
+                <input type="hidden" id="allergies-data" name="allergies_data">
+
+                <!-- Finish Button -->
+                <div class="input-group" id="finish-button-group">
+                    <button type="button" id="finish-button" onclick="submitAllergies()">Finish</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Right Side Panel -->
+        <div class="added-allergies-panel" id="added-allergies-panel">
+            <h2 id="added-allergies-title">Added Allergies</h2>
+            <ul id="allergies-list">
+                <!-- Added allergies will appear here -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const subTopics = {
+            food: {
+                subtopics: ["Grains", "Nuts", "Dairy", "Meat", "Vegetables", "Fruits"],
+                allergens: {
+                    "Grains": ["Wheat", "Rice", "Barley", "Corn"],
+                    "Nuts": ["Peanuts", "Almonds", "Cashews", "Walnuts"],
+                    "Dairy": ["Milk", "Cheese", "Butter", "Yogurt"],
+                    "Meat": ["Beef", "Pork", "Chicken", "Turkey"],
+                    "Vegetables": ["Tomatoes", "Potatoes", "Eggplants"],
+                    "Fruits": ["Strawberries", "Apples", "Oranges", "Bananas"]
+                }
+            },
+            pollen: {
+                subtopics: ["Tree Pollen", "Grass Pollen", "Weed Pollen", "Ragweed"],
+                allergens: {
+                    "Tree Pollen": ["Oak", "Pine", "Maple", "Birch"],
+                    "Grass Pollen": ["Timothy", "Rye", "Bermuda", "Bluegrass"],
+                    "Weed Pollen": ["Ragweed", "Pigweed", "Sagebrush"],
+                    "Ragweed": ["Common Ragweed", "Giant Ragweed"]
+                }
+            },
+            animals: {
+                subtopics: ["Pets", "Farm Animals", "Wild Animals"],
+                allergens: {
+                    "Pets": ["Cats", "Dogs", "Rabbits", "Hamsters"],
+                    "Farm Animals": ["Horses", "Cows", "Sheep"],
+                    "Wild Animals": ["Birds", "Rodents", "Horses"]
+                }
+            },
+            fabric: {
+                subtopics: ["Wool", "Synthetic Fabrics", "Natural Fabrics", "Dyes", "Latex"],
+                allergens: {
+                    "Wool": ["Merino", "Cashmere", "Sheep Wool"],
+                    "Synthetic Fabrics": ["Polyester", "Nylon", "Acrylic"],
+                    "Natural Fabrics": ["Cotton", "Silk", "Linen"],
+                    "Dyes": ["Azo Dyes", "Reactive Dyes"],
+                    "Latex": ["Latex Gloves", "Latex Balloons"]
+                }
+            },
+            cosmetic: {
+                subtopics: ["Skin Care", "Hair Care", "Perfumes", "Makeup", "Sunscreen"],
+                allergens: {
+                    "Skin Care": ["Moisturizers", "Face Creams", "Cleansers"],
+                    "Hair Care": ["Shampoos", "Conditioners", "Hair Dyes"],
+                    "Perfumes": ["Floral Scents", "Citrus Scents", "Woody Scents"],
+                    "Makeup": ["Lipsticks", "Foundations", "Eyeshadows"],
+                    "Sunscreen": ["Chemical Sunscreens", "Physical Sunscreens"]
+                }
+            },
+            medication: {
+                subtopics: ["Antibiotics", "Pain Relievers", "Anti-Inflammatories", "Local Anesthetics"],
+                allergens: {
+                    "Antibiotics": ["Penicillin", "Amoxicillin", "Cephalosporins"],
+                    "Pain Relievers": ["Aspirin", "Ibuprofen", "Paracetamol"],
+                    "Anti-Inflammatories": ["Corticosteroids", "NSAIDs"],
+                    "Local Anesthetics": ["Lidocaine", "Benzocaine"]
+                }
+            },
+            insects: {
+                subtopics: ["Bites & Stings", "Insect Saliva", "Insect Parts"],
+                allergens: {
+                    "Bites & Stings": ["Bee Stings", "Wasp Stings", "Mosquito Bites", "Ant Bites"],
+                    "Insect Saliva": ["Fleas", "Ticks", "Bed Bugs"],
+                    "Insect Parts": ["Dust Mites", "Cockroach Fragments"]
+                }
+            },
+            other: {
+                subtopics: ["Other Allergens"],
+                allergens: {
+                    "Other Allergens": ["Household Chemicals", "Pollen from Plants", "Mold"]
+                }
+            }
+        };
+    
+        let addedAllergies = [];
+    
+        function updateSubTopics() {
+            const mainAllergy = document.getElementById('main-allergy').value;
+            const subTopicSelect = document.getElementById('sub-topic');
+            const subTopicGroup = document.getElementById('sub-topic-group');
+            const addNewGroup = document.getElementById('add-new-group');
+            const specificAllergyGroup = document.getElementById('specific-allergy-group');
+            const specificAllergiesDiv = document.getElementById('specific-allergies');
+            const selectedSubtopic = subTopicSelect.value; // Use the raw value
+const allergens = subTopics[mainAllergy].allergens[selectedSubtopic];
+
+    
+            // Reset fields
+            subTopicSelect.innerHTML = '<option value="">-- Select Sub-Topic --</option>';
+            specificAllergiesDiv.innerHTML = '';
+    
+            if (mainAllergy === "other") {
+                addNewGroup.style.display = 'block';
+                subTopicGroup.style.display = 'none';
+                specificAllergyGroup.style.display = 'none';
+            } else if (mainAllergy) {
+                subTopicGroup.style.display = 'block';
+                addNewGroup.style.display = 'none';
+                specificAllergyGroup.style.display = 'block';
+    
+                // Populate sub-topics
+                subTopics[mainAllergy].subtopics.forEach(topic => {
+    const option = document.createElement('option');
+    option.value = topic; // Keep the casing consistent
+    option.textContent = topic;
+    subTopicSelect.appendChild(option);
+});
+
+            } else {
+                subTopicGroup.style.display = 'none';
+                addNewGroup.style.display = 'none';
+                specificAllergyGroup.style.display = 'none';
+            }
+        }
+    
+        // Add event listener for sub-topic change to update allergens
+        document.getElementById('sub-topic').addEventListener('change', function () {
+    const mainAllergy = document.getElementById('main-allergy').value;
+    const subTopicSelect = document.getElementById('sub-topic');
+    const selectedSubtopic = subTopicSelect.value;
+    const specificAllergiesDiv = document.getElementById('specific-allergies');
+
+    specificAllergiesDiv.innerHTML = ''; // Clear previous allergens
+
+    if (selectedSubtopic) {
+        const allergens = subTopics[mainAllergy].allergens[selectedSubtopic];
+        allergens.forEach(allergen => {
+            const checkboxItem = document.createElement('div');
+            checkboxItem.className = 'checkbox-item'; // Add a class for styling
+            checkboxItem.innerHTML = `
+                <label>
+                    <input type="checkbox" name="specific_allergy" value="${allergen.toLowerCase()}"> ${allergen}
+                </label>`;
+            specificAllergiesDiv.appendChild(checkboxItem);
+        });
+    }
+});
+
+    
+function addAllergy() {
+    const mainAllergy = document.getElementById('main-allergy').value;
+    const subTopic = document.getElementById('sub-topic').value;
+    const specificAllergies = Array.from(
+        document.querySelectorAll('#specific-allergies input[type="checkbox"]:checked')
+    ).map(input => input.value);
+
+    let allergyToAdd;
+
+    if (mainAllergy === "other" && specificAllergies.length > 0) {
+        allergyToAdd = specificAllergies.join(", ");
+    } else if (mainAllergy && subTopic && specificAllergies.length > 0) {
+        allergyToAdd = `${mainAllergy} - ${subTopic}: ${specificAllergies.join(", ")}`;
+    } else {
+        alert("Please select an allergy topic, sub-topic, and specific allergies.");
+        return;
+    }
+
+    if (addedAllergies.includes(allergyToAdd)) {
+        alert("This allergy is already added.");
+        return;
+    }
+
+    addedAllergies.push(allergyToAdd);
+
+    const allergiesList = document.getElementById('allergies-list');
+    const listItem = document.createElement('li');
+    listItem.innerHTML = `${allergyToAdd} <button onclick="removeAllergy('${allergyToAdd}')">Remove</button>`;
+    allergiesList.appendChild(listItem);
+
+    document.getElementById('allergies-data').value = JSON.stringify(addedAllergies);
+
+    document.getElementById('main-allergy').value = '';
+    updateSubTopics();
+}
+
+    
+        function removeAllergy(allergy) {
+            const index = addedAllergies.indexOf(allergy);
+            if (index > -1) {
+                addedAllergies.splice(index, 1);
+            }
+    
+            // Update the allergies list UI
+            const allergiesList = document.getElementById('allergies-list');
+            allergiesList.innerHTML = '';
+            addedAllergies.forEach(item => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `${item} <button onclick="removeAllergy('${item}')">Remove</button>`;
+                allergiesList.appendChild(listItem);
+            });
+    
+            // Update hidden input for the finish form
+            document.getElementById('allergies-data').value = JSON.stringify(addedAllergies);
+        }
+    
+        function submitAllergies() {
+            if (addedAllergies.length === 0) {
+                alert("Please add at least one allergy before submitting.");
+                return;
+            }
+    
+            alert(`Allergies submitted: ${JSON.stringify(addedAllergies)}`);
+            // Implement further submission logic here, e.g., send data to a backend or database.
+        }
+    </script>
+    
+</body>
+</html>

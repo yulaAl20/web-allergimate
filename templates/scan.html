@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Allergy Management App - Scan</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/home.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/scanstyles.css') }}"
+    />
+
+    <script>
+      function previewImage(event) {
+        const file = event.target.files[0];
+        const previewImg = document.getElementById("preview-img");
+
+        // Clear the current image preview
+        previewImg.src = "";
+        previewImg.style.display = "none";
+
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            previewImg.src = e.target.result;
+            previewImg.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <!-- Header Section -->
+    <header class="header">
+      <div class="header-left">
+        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+        <h2 class="logo">AllergyCare</h2>
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Search..." />
+        <button>🔍</button>
+      </div>
+      <div class="header-icons">
+        <span>🌐</span>
+        <span>🔔</span>
+        <span class="profile">👤 Den</span>
+      </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <nav>
+        <ul>
+          <li><a href="/" id="home-tab" class="active">Home</a></li>
+          <li><a href="/scan" id="scan-tab">Scan</a></li>
+          <li><a href="#" id="history-tab">History</a></li>
+          <li><a href="#" id="profile-tab">Profile</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <section id="scan" class="tab-content active">
+        <h1>Allergy Scanner</h1>
+        <div class="scanner-panel">
+          <div class="white-panel">
+            <div class="left-side">
+              <h2>Image Upload Area</h2>
+              <form
+                id="prediction_submitForm"
+                method="POST"
+                action="/predict"
+                enctype="multipart/form-data"
+              >
+                <!-- Image Upload -->
+                <label for="file-upload" class="upload-icon"
+                  >📤 Choose an Image</label
+                >
+                <input
+                  type="file"
+                  id="file-upload"
+                  name="image"
+                  accept="image/*"
+                  required
+                  hidden
+                  onchange="previewImage(event)"
+                />
+                <div id="image-preview">
+                  <img
+                    id="preview-img"
+                    src=""
+                    alt="Preview will appear here"
+                    style="display: none; max-width: 100%; height: auto"
+                  />
+                  {% if uploaded_image_url %}
+                  <img
+                    src="{{ uploaded_image_url }}"
+                    alt="Uploaded Image"
+                    style="width: 800px; height: auto"
+                  />
+                  {% endif %}
+                </div>
+
+                <!-- Dropdown Inputs -->
+                <label for="mainSymptom"
+                  >What symptoms are you experiencing?</label
+                >
+                <select id="mainSymptom" name="mainSymptom" required>
+                  {% for symptom in symptoms %}
+                  <option value="{{ symptom }}"{% if symptom == main_symptom %}selected{% endif %}>{{ symptom }}</option>
+                  {% endfor %}
+                </select>
+
+                <label for="affectedArea"
+                  >Where is the redness or discomfort located on your
+                  body?</label
+                >
+                <select id="affectedArea" name="affectedArea" required>
+                  {% for area in affected_areas %}
+                  <option value="{{ area }}"{% if area == affected_area %}selected{% endif %}>{{ area }}</option>
+                  {% endfor %}
+                </select>
+
+                <label for="subAllergyType"
+                  >Have you recently been exposed to any common
+                  allergens?</label
+                >
+                <select id="subAllergyType" name="subAllergyType" required>
+                  {% for sub_allergy_type in sub_allergy_types %}
+                  <option value="{{ sub_allergy_type }}"{% if sub_allergy_type == sub_allergy_type %}selected{% endif %}>{{ sub_allergy_type }}</option>
+                  {% endfor %}
+                </select>
+
+                <!-- Submit Button -->
+                <button id="check-allergen" type="submit">
+                  Check Allergen
+                </button>
+              </form>
+            </div>
+
+            <div class="right-side">
+              <h2>Results</h2>
+              <div id="results-display">
+                {% if result %}
+                <div id="result">
+                  <h3>Analysis Results:</h3>
+                  <p>
+                    <strong>Allergy Type:</strong> {{ result.allergy_type }}
+                  </p>
+                  <p>
+                    <strong>Allergy Item:</strong> {{ result.allergy_item }}
+                  </p>
+                <!-- Display Recommended Medicines -->
+                  <h3>Recommended Medicines:</h3>
+                  <ul>
+                      {% for medicine in result.medicines %}
+                      <li>{{ medicine }}</li>
+                      {% endfor %}
+                  </ul>
+              </div>
+              {% else %}
+              <p>No results yet. Please upload an image and fill out the form to get predictions.</p>
+              {% endif %}
+              </div>
+              <div id="allergy-notes">
+                <h3>Notes:</h3>
+                <ul>
+                    <li><strong>Mild Allergies:</strong> Over-the-counter antihistamines like <em>Cetirizine</em>, <em>Loratadine</em>, or <em>Fexofenadine</em> can help.</li>
+                    <li><strong>Severe Allergies:</strong> For life-threatening reactions like anaphylaxis, an <em>Epinephrine auto-injector (EpiPen)</em> is essential.</li>
+                    <li><strong>Management:</strong> Inhalers, nasal sprays, and avoidance of allergens are key strategies.</li>
+                </ul>
+            </div>            
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Script for Navigation -->
+    <script>
+      const tabs = document.querySelectorAll(".sidebar a");
+      const contents = document.querySelectorAll(".tab-content");
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          tabs.forEach((item) => item.classList.remove("active"));
+          tab.classList.add("active");
+
+          contents.forEach((content) => content.classList.remove("active"));
+          document
+            .querySelector(tab.getAttribute("id").replace("-tab", ""))
+            .classList.add("active");
+        });
+      });
+      const sidebarToggle = document.getElementById("sidebar-toggle");
+      const sidebar = document.getElementById("sidebar");
+
+      // Toggle 'show-sidebar' class when the toggle button is clicked
+      sidebarToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("show-sidebar");
+      });
+    </script>
+  </body>
+</html>

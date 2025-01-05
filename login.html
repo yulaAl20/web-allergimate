@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <title> Login and Registration </title>
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="js/login.js"></script>
+</head>
+<body>
+<div class="container">
+    <input type="checkbox" id="flip">
+    <div class="cover">
+        <div class="front">
+            <img src="images/l1.png" alt="">
+            <div class="text">
+                <span class="text-1">Every new friend is a <br> new adventure</span>
+                <span class="text-2">Let's get connected</span>
+            </div>
+        </div>
+        <div class="back">
+            <div class="text">
+                <span class="text-1">Complete miles of journey <br> with one step</span>
+                <span class="text-2">Let's get started</span>
+            </div>
+        </div>
+    </div>
+    <div class="forms">
+        <div class="form-content">
+            <div class="login-form">
+                <div class="title">Login</div>
+                <div class="input-boxes">
+                    <div class="input-box">
+                        <i class="fas fa-envelope"></i>
+                        <input id="login-email" type="text" placeholder="Enter your email" required>
+                    </div>
+                    <div class="input-box">
+                        <i class="fas fa-lock"></i>
+                        <input id="login-password" type="password" placeholder="Enter your password" required>
+                    </div>
+                    <div class="text"><a href="#">Forgot password?</a></div>
+                    <!-- Error message div -->
+                     <div id="login-message" class="message"></div>
+
+                    <div class="button input-box">
+                        <input id="login-btn" type="button" value="login">
+                    </div>
+                    <div class="social-login">
+                        <p>Or login with</p>
+                        <div class="social-buttons">
+                            <button class="google-btn">
+                                <a href="https://accounts.google.com/signin" target="_blank" style="text-decoration: none; color: inherit;">
+                                    <img src="images/search.png" alt="Google" style="width: 20px; height: 20px; margin-right: 10px;" />
+                                    Login with Google
+                                </a>
+                            </button>
+                            <button class="apple-btn">
+                                <a href="https://appleid.apple.com/sign-in" target="_blank" style="text-decoration: none; color: inherit;">
+                                    <img src="images/apple.png" alt="Apple" style="width: 20px; height: 20px; margin-right: 10px;" />
+                                    Login with Apple ID
+                                </a>
+                            </button>
+                            <button class="facebook-btn">
+                                <a href="https://www.facebook.com/login" target="_blank" style="text-decoration: none; color: inherit;">
+                                    <img src="images/facebook.png" alt="Facebook" style="width: 20px; height: 20px; margin-right: 10px;" />
+                                    Login with Facebook
+                                </a>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text sign-up-text">Don't have an account? <label for="flip">Signup now</label></div>
+                </div>
+            </div>
+            <div class="signup-form">
+                <div class="title">Signup</div>
+                <div class="input-boxes">
+                    <div class="input-box">
+                        <i class="fas fa-user"></i>
+                        <input id="signup-name" type="text" placeholder="Enter your name" required>
+                    </div>
+                    <div class="input-box">
+                        <i class="fas fa-envelope"></i>
+                        <input id="signup-email" type="text" placeholder="Enter your email" required>
+                    </div>
+                    <div class="input-box">
+                        <i class="fas fa-lock"></i>
+                        <input id="signup-password" type="password" placeholder="Enter your password" required>
+                    </div>
+                    <div class="input-box">
+                        <i class="fas fa-lock"></i>
+                        <input id="signup-confirm-password" type="password" placeholder="Confirm your password" required>
+                    </div>
+                    <!-- Error message div -->
+                     <div id="signup-message" class="message"></div>
+
+                    <!-- Add this inside your signup-form -->
+                     <div class="button input-box">
+    
+                     <input id="Confirm-btn" type="button" value="Confirm">
+    
+                     </div>
+
+<!-- If you need an "Add your allergies" button, you can add it below -->
+<div class="button input-box">
+    <a href="allergies.html" class="button-link">
+        <input id="add-allergies-btn" type="button" value="          Add Your Allergies   -->    ">
+    </a>
+</div>
+
+                    
+                        
+                    </div>
+                    <div class="text sign-up-text">Already have an account? <label for="flip">Login now</label></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

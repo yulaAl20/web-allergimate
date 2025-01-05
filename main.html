@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Allergy Management App</title>
+  <link rel="stylesheet" href="css/home.css">
+  <style>
+    .add-allergy-btn {
+      background-color: #a552f4;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .add-allergy-btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Section -->
+  <header class="header">
+    <div class="header-left">
+      <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+      <h2 class="logo">AllergiMate</h2>
+    </div>
+    <div class="search-bar">
+      <input type="text" placeholder="Search...">
+      <button>🔍</button>
+    </div>
+    <div class="header-icons">
+      <span>🌐</span>
+      <span>🔔</span>
+      <span class="profile">👤 Den</span>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <nav>
+      <ul>
+        <li><a href="#" id="home-tab" class="active">Home</a></li>
+        <li><a href="#" id="scan-tab">Scan</a></li>
+        <li><a href="#" id="history-tab">History</a></li>
+        <li><a href="#" id="profile-tab">Profile</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Home Page -->
+    <section id="home" class="tab-content active">
+      <h1>Allergy Overview</h1>
+      <div class="allergy-info">
+        <div class="allergy-text">
+          <h3>Current Allergies</h3>
+          <div class="allergy-list" id="allergy-list"></div> <!-- Container for allergy emojis -->
+        </div>
+        <!-- Add Allergy Button -->
+        <button class="add-allergy-btn" onclick="window.location.href='allergies.html'">+</button>
+      </div>
+      <div class="calendar-graph">
+        <div class="calendar-panel">
+          <h3>Allergy Reaction Days</h3>
+          <div id="calendar-container">
+            <div id="calendar-header">
+              <button id="prev-month">&lt;</button>
+              <h3 id="calendar-title"></h3>
+              <button id="next-month">&gt;</button>
+            </div>
+            <div id="calendar-grid"></div>
+          </div>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- Scan Page -->
+    <section id="scan" class="tab-content">
+      <h1>Allergy Scanner</h1>
+      <div class="scanner-panel">
+        <div class="white-panel">
+          <p>Scan food or allergens here:</p>
+          <button>Scan Now</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- History Page -->
+    <section id="history" class="tab-content">
+      <h1>Reaction History</h1>
+      <p>📝 View your past allergy reactions here.</p>
+    </section>
+
+    <!-- Profile Page -->
+    <section id="profile" class="tab-content">
+      <h1>Contact a Doctor</h1>
+      <p>📞 Reach out to allergy specialists for assistance.</p>
+    </section>
+  </main>
+
+  <!-- Script for Navigation -->
+  <script>
+    const tabs = document.querySelectorAll('.sidebar a');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(item => item.classList.remove('active'));
+        tab.classList.add('active');
+
+        contents.forEach(content => content.classList.remove('active'));
+        document.querySelector(`#${tab.getAttribute('id').replace('-tab', '')}`).classList.add('active');
+      });
+    });
+
+    const sidebarToggle = document.getElementById("sidebar-toggle");
+    const sidebar = document.getElementById("sidebar");
+
+    sidebarToggle.addEventListener("click", () => {
+      sidebar.classList.toggle("show-sidebar");
+    });
+  </script>
+
+  <!-- Firebase Script and Calendar Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyANhyD1eztaP_jnKwryZMzQ078Yt1wdaa8",
+      authDomain: "allergimate-11086.firebaseapp.com",
+      projectId: "allergimate-11086",
+      storageBucket: "allergimate-11086.firebasestorage.app",
+      messagingSenderId: "106919192013",
+      appId: "1:106919192013:web:a9a21590be3bab02fdd084",
+      measurementId: "G-MB9R5RTV5X"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const database = getDatabase(app);
+
+    const profileName = document.querySelector(".profile");
+
+    const allergyEmojis = {
+      "Grains": "🌾",
+      "Nuts": "🥜",
+      "Dairy": "🥛",
+      "Meat": "🍖",
+      "Fruits": "🍎",
+      "Tree Pollen": "🌳",
+      "Cats": "🐱",
+      "Dogs": "🐶",
+      "Bees": "🐝",
+      "Medication": "💊"
+    };
+
+    const displayAllergyEmojis = (allergies) => {
+      const allergyList = document.getElementById("allergy-list");
+      allergyList.innerHTML = "";
+
+      if (!Array.isArray(allergies)) return;
+
+      allergies.forEach(allergy => {
+        const emoji = allergyEmojis[allergy] || "⚠️"; // Default emoji
+        const allergyItem = document.createElement("div");
+        allergyItem.className = "allergy-item";
+        allergyItem.innerHTML = `<span>${emoji} ${allergy}</span>`;
+        allergyList.appendChild(allergyItem);
+      });
+    };
+
+    const calendarGrid = document.getElementById("calendar-grid");
+    const calendarTitle = document.getElementById("calendar-title");
+    const prevMonth = document.getElementById("prev-month");
+    const nextMonth = document.getElementById("next-month");
+
+    let currentDate = new Date();
+
+    const loadCalendar = (reactions = []) => {
+      calendarGrid.innerHTML = "";
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+
+      calendarTitle.textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      for (let i = 0; i < firstDay; i++) {
+        calendarGrid.appendChild(document.createElement("div"));
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayDiv = document.createElement("div");
+        dayDiv.className = "calendar-day";
+
+        // Check if the day is in the reactions array and highlight it
+        if (reactions.includes(day)) {
+          dayDiv.classList.add("reaction");
+        }
+
+        dayDiv.textContent = day;
+        calendarGrid.appendChild(dayDiv);
+
+        // Click on day to make it red and store in Firebase
+        dayDiv.addEventListener("click", async () => {
+          dayDiv.classList.add("reaction"); // Make the clicked day red
+
+          // Save selected day in localStorage
+          localStorage.setItem("selectedDay", day); 
+
+          // Get the current user and update the reactionDays in Firebase
+          const user = auth.currentUser;
+          if (user) {
+            const userRef = ref(database, `users/${user.uid}/reactionDays/${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${day}`);
+            await set(userRef, true);  // Save this day as a reaction day in the database
+          }
+
+          window.location.href = "calender.html"; // Redirect to calendar page
+        });
+      }
+    };
+
+    const selectedDay = localStorage.getItem("selectedDay");
+    if (selectedDay) {
+      // Find the day div and add the reaction class
+      const dayDivs = document.querySelectorAll('.calendar-day');
+      dayDivs.forEach(div => {
+        if (div.textContent == selectedDay) {
+          div.classList.add("reaction");
+        }
+      });
+    }
+
+    prevMonth.addEventListener("click", () => {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      loadCalendar();
+    });
+
+    nextMonth.addEventListener("click", () => {
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      loadCalendar();
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userRef = ref(database, `users/${user.uid}`);
+        const snapshot = await get(userRef);
+
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          profileName.textContent = `👤 ${userData.name || "User"}`;
+
+          // Extract the day from reactionDays for calendar highlighting
+          const reactionDays = Object.keys(userData.reactionDays || {}).map(date => {
+            const day = new Date(date).getDate(); // Get just the day part
+            return day;
+          });
+
+          displayAllergyEmojis(userData.allergies || []);
+          loadCalendar(reactionDays);
+        }
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+  </script>
+  
+
+  <script>
+    
+    // Fetch and display user data
+    const displayUserData = async (user) => {
+      const userRef = ref(database, `users/${user.uid}`);
+      const snapshot = await get(userRef);
+  
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        profileName.textContent = `👤 ${userData.name || "User"}`;
+      } else {
+        console.error("User data not found.");
+      }
+    };
+  
+    // Click event for profile to load user data
+    profileName.addEventListener('click', () => {
+      const user = auth.currentUser;
+      if (user) {
+        displayUserData(user);
+      } else {
+        console.log("No user is logged in.");
+      }
+    });
+  
+    // Listen for authentication state changes
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        displayUserData(user); // Display data when the user logs in
+      } else {
+        profileName.textContent = "👤 Sign In"; // Prompt for sign-in if no user is logged in
+      }
+    });
+  </script>
+  
+</body>
+</html>

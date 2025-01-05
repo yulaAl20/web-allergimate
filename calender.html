@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Allergy Reaction Form</title>
+  <link rel="stylesheet" href="css/calender.css">
+</head>
+<body>
+  <header class="header">
+    <h2 class="logo">AllergiMate</h2>
+  </header>
+
+  <main class="main-content">
+    <h1>Record Allergy Reaction</h1>
+    <form id="reaction-form">
+      <label for="allergen">Allergen:</label>
+      <input type="text" id="allergen" required>
+
+      <label for="severity">Severity:</label>
+      <label><input type="radio" name="severity" value="mild"> Mild</label>
+      <label><input type="radio" name="severity" value="moderate"> Moderate</label>
+      <label><input type="radio" name="severity" value="severe"> Severe</label>
+
+      <label for="reaction-time">Time of Reaction:</label>
+      <input type="time" id="reaction-time" required>
+
+      <button type="submit">Save Reaction</button>
+    </form>
+
+    <button onclick="window.location.href='main.html'">Go Back</button>
+
+    <div id="profile-name"></div> <!-- Add this for profile name display -->
+  </main>
+
+  <!-- Firebase Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyANhyD1eztaP_jnKwryZMzQ078Yt1wdaa8",
+      authDomain: "allergimate-11086.firebaseapp.com",
+      projectId: "allergimate-11086",
+      storageBucket: "allergimate-11086.firebasestorage.app",
+      messagingSenderId: "106919192013",
+      appId: "1:106919192013:web:a9a21590be3bab02fdd084",
+      measurementId: "G-MB9R5RTV5X"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const database = getDatabase(app);
+
+    const reactionForm = document.getElementById("reaction-form");
+    const profileName = document.getElementById("profile-name");
+
+    // Check for user authentication status
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userRef = ref(database, `users/${user.uid}`);
+        const snapshot = await get(userRef);
+
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          profileName.textContent = `👤 ${userData.name || "User"}`;
+        }
+      } else {
+        window.location.href = "login.html"; // Redirect to login if not authenticated
+      }
+    });
+
+    // Save reaction to Firebase
+    reactionForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const allergen = document.getElementById("allergen").value;
+      const severity = document.querySelector('input[name="severity"]:checked')?.value;
+      const reactionTime = document.getElementById("reaction-time").value;
+
+      const userId = auth.currentUser?.uid;
+      if (userId) {
+        const selectedDay = localStorage.getItem("selectedDay");
+
+        if (selectedDay) {
+          const reactionRef = ref(database, `users/${userId}/reactionDays/${selectedDay}`);
+          set(reactionRef, { allergen, severity, reactionTime })
+            .then(() => {
+              alert("Reaction saved successfully!");
+              window.location.href = "main.html"; // Redirect back to the main page
+            })
+            .catch((error) => {
+              alert("Error saving reaction: " + error.message);
+            });
+        } else {
+          alert("No day selected.");
+        }
+      } else {
+        alert("Please log in first.");
+      }
+    });
+  </script>
+</body>
+</html>
